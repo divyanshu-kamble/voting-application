@@ -4,7 +4,7 @@ pipeline {
     stage('installing dependencies') {
       steps {
         sh 'cd vote'
-        sh 'pip3 -r requirements.txt'
+        sh 'pip3 install -r requirements.txt'
         sh 'cd ..'
       }
     }
