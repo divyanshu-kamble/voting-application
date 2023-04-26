@@ -34,7 +34,17 @@ pipeline {
     }
     stage("Docker image to Registry") {
        steps{
-        sh 'echo "installing depend"'
+         //docker push image
+         // login - username/password in jenkins
+         //withCredentials
+         withCredentials([usernamePassword(credentialsId: 'docker', passwordVariable: 'password', usernameVariable: 'username')]) {
+    // some block
+              sh '''
+                  docker login -u $username -p $password
+                  docker push divyanshuk/vote:$BUILD_NUMBER 
+                  docker push divyanshuk/vote:latest
+              '''
+          }
         }
     }
   }
