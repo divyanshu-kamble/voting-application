@@ -29,7 +29,7 @@ pipeline {
     }
     stage("Docker Image Security Scan") {
       steps{
-        sh 'echo "installing depend"'
+        sh ' trivy image -s HIGH -s CRITICAL --exit-code 1 divyanshuk/vote:$BUILD_NUMBER'
         }
     }
     stage("Docker image to Registry") {
@@ -42,7 +42,7 @@ pipeline {
               sh '''
                   docker login -u $username -p $password
                   docker push divyanshuk/vote:$BUILD_NUMBER 
-                  docker push divyanshuk/vote:latest
+                  docker push divyanshuk/vote:latest 
               '''
           }
         }
