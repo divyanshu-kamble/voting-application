@@ -14,7 +14,7 @@ pipeline {
       withSonarQubeEnv('sonarqube ec2') {
       sh '''
       cd vote
-      ${scannerHome}/bin/sonar-scanner
+      sonar-scanner
       '''
       }
       }
