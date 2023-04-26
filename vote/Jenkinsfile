@@ -3,9 +3,10 @@ pipeline {
   stages {
     stage('installing dependencies') {
       steps {
-        sh 'cd vote'
-        sh 'pip3 install -r requirements.txt'
-        sh 'cd ..'
+        sh '''
+        cd vote && ls -l
+        pip3 install -r requirements.txt
+        '''
       }
     }
     stage('Sonarqube scan') {
