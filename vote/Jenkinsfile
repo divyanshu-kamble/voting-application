@@ -11,7 +11,10 @@ pipeline {
     }
     stage('Sonarqube scan') {
       steps {
-        sh 'echo "installing depend"'
+      withSonarQubeEnv('sonarqube ec2') {
+      sh 'echo $pwd'
+      sh "${scannerHome}/bin/sonar-scanner"
+      }
       }
     }
     stage('Building Docker Images') {
