@@ -12,7 +12,7 @@ pipeline {
     stage('Sonarqube scan') {
       steps {
       withSonarQubeEnv('sonarqube ec2') {
-      sh 'echo $pwd'
+      sh 'echo $PWD'
       sh "${scannerHome}/bin/sonar-scanner"
       }
       }
