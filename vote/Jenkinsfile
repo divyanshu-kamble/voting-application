@@ -13,15 +13,18 @@ pipeline {
       steps {
       withSonarQubeEnv('sonarqube ec2') {
       sh '''
-      cd vote
-      sonar-scanner
+          cd vote
+          sonar-scanner
       '''
       }
       }
     }
     stage('Building Docker Images') {
       steps {
-        sh 'echo "installing depend"'
+        sh '''
+          cd vote
+          docker build -t divyanshuk/vote:$BUILD_NUMBER -t divyanshuk/vote:latest .
+        '''
       }
     }
     stage("Docker Image Security Scan") {
