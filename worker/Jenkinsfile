@@ -30,14 +30,32 @@ pipeline {
     stage('Building Docker Images') {
       steps {
         sh '''
-          echo '2nd'
+        cd worker
+        docker build -t divyanshuk/worker:$BUILD_NUMBER -t divyanshuk/worker:latest .
         '''
       }
     }
     stage("Docker Image Security Scan") {
       steps{
-        sh 'echo "3rd"'
-        }
+        sh 'trivy image -s HIGH -s CRITICAL --exit-code 0 divyanshuk/worker:$BUILD_NUMBER''
+       
+      }
     }
+    stage("Docker image to Registry") {
+       steps{
+         //docker push image
+         // login - username/password in jenkins
+         //withCredentials
+         withCredentials([usernamePassword(credentialsId: 'docker', passwordVariable: 'password', usernameVariable: 'username')]) {
+    // some block
+              sh '''
+                  docker login -u $username -p $password
+                  docker push divyanshuk/worker:$BUILD_NUMBER 
+                  docker push divyanshuk/worker:latest 
+              '''
+          }
+       }
+    }
+
   }
 }
