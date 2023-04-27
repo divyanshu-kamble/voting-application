@@ -37,8 +37,7 @@ pipeline {
     }
     stage("Docker Image Security Scan") {
       steps{
-        sh 'trivy image -s HIGH -s CRITICAL --exit-code 0 divyanshuk/worker:$BUILD_NUMBER''
-       
+        sh 'trivy image -s HIGH -s CRITICAL --exit-code 0 divyanshuk/worker:$BUILD_NUMBER'
       }
     }
     stage("Docker image to Registry") {
