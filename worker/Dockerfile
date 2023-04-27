@@ -19,7 +19,7 @@ RUN case ${TARGETPLATFORM} in \
          "linux/arm64/v8")  ARCH=arm64  ;; \
          "linux/arm/v7") ARCH=arm  ;; \
     esac \
-    && dotnet restore -r linux-${ARCH} -p:PublishReadyToRun=true -p:PublishTrimmed=true
+    && dotnet build -r linux-${ARCH}
 
 COPY . .
 RUN  case ${TARGETPLATFORM} in \
