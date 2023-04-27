@@ -31,7 +31,7 @@ pipeline {
       steps {
         sh '''
         cd worker
-        docker buildx build --build-args TARGETPLATFORM=linux/amd64 -t divyanshuk/worker:$BUILD_NUMBER -t divyanshuk/worker:latest .
+        docker buildx build --build-arg TARGETPLATFORM=linux/amd64 -t divyanshuk/worker:$BUILD_NUMBER -t divyanshuk/worker:latest .
         '''
       }
     }
