@@ -19,7 +19,7 @@ RUN case ${TARGETPLATFORM} in \
          "linux/arm64/v8")  ARCH=arm64  ;; \
          "linux/arm/v7") ARCH=arm  ;; \
     esac \
-    && dotnet build -r linux-${ARCH}
+    && dotnet restore -r linux-${ARCH} -p:PublishReadyToRun=true -p:PublishTrimmed=true
 
 COPY . .
 RUN  case ${TARGETPLATFORM} in \
@@ -28,7 +28,7 @@ RUN  case ${TARGETPLATFORM} in \
          "linux/arm64/v8")  ARCH=arm64  ;; \
          "linux/arm/v7") ARCH=arm  ;; \
     esac \
-    && dotnet publish -c release -o /app -r linux-${ARCH} --self-contained false --no-restore
+    && dotnet publish -c release -o /app -r linux-${ARCH} --self-contained false --no-restore --no-cache
 
 # app image
 FROM mcr.microsoft.com/dotnet/runtime:7.0
