@@ -1,0 +1,23 @@
+pipeline {
+  agent { label 'first'}
+  stages {
+    stage('Build') {
+      steps {
+        bat "dotnet restore ./worker/Worker.csproj"
+      }
+    }
+
+    stage('Building Docker Images') {
+      steps {
+        sh '''
+          echo '2nd'
+        '''
+      }
+    }
+    stage("Docker Image Security Scan") {
+      steps{
+        sh 'echo "3rd"'
+        }
+    }
+  }
+}
