@@ -1,0 +1,51 @@
+pipeline {
+  agent { label 'first'}
+  stages {
+    stage('installing dependencies') {
+      steps {
+        sh '''
+        nvm install node 18.0
+        npm install
+        '''
+      }
+    }
+    stage('Sonarqube scan') {
+      steps {
+      withSonarQubeEnv('sonarqube ec2') {
+      sh '''
+          cd result
+          sonar-scanner
+      '''
+      }
+      }
+    }
+    stage('Building Docker Images') {
+      steps {
+        sh '''
+          cd result
+          docker build -t divyanshuk/result:$BUILD_NUMBER -t divyanshuk/result:latest .
+        '''
+      }
+    }
+    stage("Docker Image Security Scan") {
+      steps{
+        sh ' trivy image -s HIGH -s CRITICAL --exit-code 0 divyanshuk/result:$BUILD_NUMBER'
+        }
+    }
+    stage("Docker image to Registry") {
+       steps{
+         //docker push image
+         // login - username/password in jenkins
+         //withCredentials
+         withCredentials([usernamePassword(credentialsId: 'docker', passwordVariable: 'password', usernameVariable: 'username')]) {
+    // some block
+              sh '''
+                  docker login -u $username -p $password
+                  docker push divyanshuk/result:$BUILD_NUMBER 
+                  docker push divyanshuk/result:latest 
+              '''
+          }
+        }
+    }
+  }
+}
