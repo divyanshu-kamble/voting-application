@@ -16,7 +16,17 @@ pipeline {
         sh "dotnet build ./worker/Worker.csproj"
       }
     }
-
+    stage('Sonarqube scan') {
+      steps {
+      withSonarQubeEnv('sonarqube ec2') {
+      sh '''
+          cd vote
+          sonar-scanner
+      '''
+      }
+      }
+    }
+    
     stage('Building Docker Images') {
       steps {
         sh '''
