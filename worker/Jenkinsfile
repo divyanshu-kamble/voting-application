@@ -20,13 +20,13 @@ pipeline {
       steps {
       withSonarQubeEnv('sonarqube ec2') {
       sh '''
-          cd vote
+          cd worker
           sonar-scanner
       '''
       }
       }
     }
-    
+
     stage('Building Docker Images') {
       steps {
         sh '''
