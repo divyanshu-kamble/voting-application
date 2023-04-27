@@ -1,9 +1,19 @@
 pipeline {
   agent { label 'first'}
   stages {
-    stage('Build') {
+    stage('Restore') {
       steps {
-        bat "dotnet restore ./worker/Worker.csproj"
+        sh "dotnet restore ./worker/Worker.csproj"
+      }
+    }
+        stage('Clean') {
+      steps {
+        sh "dotnet clean ./worker/Worker.csproj"
+      }
+    }
+        stage('Build') {
+      steps {
+        sh "dotnet build ./worker/Worker.csproj"
       }
     }
 
