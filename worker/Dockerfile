@@ -7,7 +7,7 @@
 # for example, if you were on Intel (amd64) and wanted to build for ARM, you would use:
 # docker buildx build --platform "linux/arm64/v8" .
 FROM --platform= arm64mcr.microsoft.com/dotnet/sdk:7.0 as build
-ARG TARGETPLATFORM = "linux/arm64/v8"
+ARG TARGETPLATFORM
 # ARG BUILDPLATFORM
 RUN echo "I am running on $BUILDPLATFORM, building for $TARGETPLATFORM"
 
