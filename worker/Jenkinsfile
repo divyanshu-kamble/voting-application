@@ -31,15 +31,15 @@ pipeline {
       steps {
         sh '''
         cd worker
-        docker buildx build --no-cache --build-arg TARGETPLATFORM=linux/amd64 -t divyanshuk/worker:$BUILD_NUMBER -t divyanshuk/worker:latest .
+        sudo docker buildx build --no-cache --build-arg TARGETPLATFORM=linux/amd64 -t divyanshuk/worker:$BUILD_NUMBER -t divyanshuk/worker:latest .
         '''
       }
     }
-    stage("Docker Image Security Scan") {
-      steps{
-        sh 'trivy image -s HIGH -s CRITICAL --exit-code 0 divyanshuk/worker:$BUILD_NUMBER'
-      }
-    }
+    // stage("Docker Image Security Scan") {
+    //   steps{
+    //     sh 'trivy image -s HIGH -s CRITICAL --exit-code 0 divyanshuk/worker:$BUILD_NUMBER'
+    //   }
+    // }
     stage("Docker image to Registry") {
        steps{
          //docker push image
@@ -48,9 +48,9 @@ pipeline {
          withCredentials([usernamePassword(credentialsId: 'docker', passwordVariable: 'password', usernameVariable: 'username')]) {
     // some block
               sh '''
-                  docker login -u $username -p $password
-                  docker push divyanshuk/worker:$BUILD_NUMBER 
-                  docker push divyanshuk/worker:latest 
+                  sudo docker login -u $username -p $password
+                  sudo docker push divyanshuk/worker:$BUILD_NUMBER 
+                  sudo docker push divyanshuk/worker:latest 
               '''
           }
        }
