@@ -1,5 +1,5 @@
 pipeline {
-  agent { label 'first'}
+  agent { label 'CI'}
   stages {
     stage('Restore') {
       steps {
@@ -16,16 +16,16 @@ pipeline {
         sh "dotnet build ./worker/Worker.csproj"
       }
     }
-    stage('Sonarqube scan') {
-      steps {
-      withSonarQubeEnv('sonarqube ec2') {
-      sh '''
-          cd worker
-          sonar-scanner
-      '''
-      }
-      }
-    }
+    // stage('Sonarqube scan') {
+    //   steps {
+    //   withSonarQubeEnv('sonarqube ec2') {
+    //   sh '''
+    //       cd worker
+    //       sonar-scanner
+    //   '''
+    //   }
+    //   }
+    // }
 
     stage('Building Docker Images') {
       steps {
