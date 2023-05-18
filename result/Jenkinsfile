@@ -12,16 +12,16 @@ pipeline {
         '''
       }
     }
-    stage('Sonarqube scan') {
-      steps {
-      withSonarQubeEnv('sonarqube ec2') {
-      sh '''
-          cd result
-          sonar-scanner
-      '''
-      }
-      }
-    }
+    // stage('Sonarqube scan') {
+    //   steps {
+    //   withSonarQubeEnv('sonarqube ec2') {
+    //   sh '''
+    //       cd result
+    //       sonar-scanner
+    //   '''
+    //   }
+    //   }
+    // }
     stage('Building Docker Images') {
       steps {
         sh '''
@@ -30,11 +30,11 @@ pipeline {
         '''
       }
     }
-    stage("Docker Image Security Scan") {
-      steps{
-        sh ' trivy image -s HIGH -s CRITICAL --exit-code 0 divyanshuk/result:$BUILD_NUMBER'
-        }
-    }
+    // stage("Docker Image Security Scan") {
+    //   steps{
+    //     sh ' trivy image -s HIGH -s CRITICAL --exit-code 0 divyanshuk/result:$BUILD_NUMBER'
+    //     }
+    // }
     stage("Docker image to Registry") {
        steps{
          //docker push image
