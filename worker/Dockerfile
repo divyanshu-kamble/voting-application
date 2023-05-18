@@ -21,14 +21,15 @@ RUN case ${TARGETPLATFORM} in \
     esac \
     && dotnet restore -r linux-${ARCH} -p:PublishReadyToRun=true -p:PublishTrimmed=true
 
-COPY . .
+COPY ./* .
 RUN  case ${TARGETPLATFORM} in \
          "linux/amd64")  ARCH=x64  ;; \
          "linux/arm64")  ARCH=arm64  ;; \
          "linux/arm64/v8")  ARCH=arm64  ;; \
          "linux/arm/v7") ARCH=arm  ;; \
     esac \
-    && dotnet publish -c release -o /app -r linux-${ARCH} --self-contained true --no-cache -p:PublishReadyToRun=true -p:PublishTrimmed=true
+    && dotnet publish -c release -o /app -r linux-${ARCH} --self-contained true --no-cache 
+    #-p:PublishReadyToRun=true -p:PublishTrimmed=true
 
 # app image
 FROM mcr.microsoft.com/dotnet/runtime:7.0
