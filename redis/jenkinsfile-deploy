@@ -6,11 +6,9 @@ pipeline {
     // define environment variable ENVIRONMENT
     stage('kubernetes deploy') {
       steps {
-      withSonarQubeEnv('sonarqube ec2') {
-      sh '''
-            kubectl apply kubernetes
-      '''
-        }
+        sh '''
+                kubectl apply kubernetes
+        '''
       }
     }
 }
