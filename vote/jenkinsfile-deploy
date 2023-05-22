@@ -5,7 +5,7 @@ pipeline {
       steps {
         sh '''
             pwd
-            cd redis
+            cd vote
             kubectl apply -f ./kubernetes
         '''
       }
