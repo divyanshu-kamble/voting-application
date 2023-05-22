@@ -4,6 +4,8 @@ pipeline {
     stage('kubernetes') {
       steps {
         sh '''
+            pwd
+            cd redis
             kubectl apply -f kubernetes
         '''
       }
