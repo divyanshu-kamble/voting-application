@@ -1,14 +1,12 @@
 pipeline {
-    agent {
-    label 'Deploy'
-}
-
-    // define environment variable ENVIRONMENT
-    stage('kubernetes deploy') {
+  agent { label 'Deploy'}
+  stages {
+    stage('kubernetes') {
       steps {
         sh '''
-                kubectl apply kubernetes
+            kubectl apply -f kubernetes
         '''
       }
     }
+  }
 }
