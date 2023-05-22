@@ -6,7 +6,7 @@ pipeline {
         sh '''
             pwd
             cd redis
-            kubectl apply -f kubernetes
+            kubectl apply -f ./kubernetes
         '''
       }
     }
