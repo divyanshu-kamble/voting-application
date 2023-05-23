@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: 'result-app'
+  labels:
+    tags: voting-application
+
+spec:
+  template:
+    metadata:
+      name: 'result-app'
+      labels:
+        app: 'result-app'
+
+    spec:
+      containers:
+      - name: result
+        image: divyanshuk/result:latest
+
+  replicas: 2
+  selector:
+    matchLabels:
+      app: 'result-app'

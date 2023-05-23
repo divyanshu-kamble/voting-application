@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres-configmap
+  labels:
+    tags: voting-application
+data:
+  POSTGRES_DB: db
+  POSTGRES_USER: postgres
