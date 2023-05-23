@@ -4,8 +4,9 @@ pipeline {
     stage('kubernetes') {
       steps {
         sh '''
-            cd redis
-            kubectl apply -f kubernetes
+            pwd
+            cd postgres
+            kubectl apply -f ./kubernetes
         '''
       }
     }
