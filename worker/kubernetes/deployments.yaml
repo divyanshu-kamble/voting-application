@@ -15,7 +15,16 @@ spec:
     spec:
       containers:
       - name: worker
-        image: divyanshuk/worker:latest
+        image: divyanshuk/worker:latest'
+        resources:
+          #The amount of resources asked by default 
+          requests:
+            cpu: '200m'
+            memory: '128Mi'
+          #The maximum amount of resources it can utilize
+          limits:
+            cpu: '500m'
+            memory: '512Mi'
 
 
   replicas: 2
