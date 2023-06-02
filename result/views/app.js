@@ -1,4 +1,4 @@
-var app = angular.module('ChimpvsGorilla', []);
+var app = angular.module('GodzillavsGorilla', []);
 var socket = io.connect({transports:['polling']});
 
 var bg1 = document.getElementById('background-stats-1');
