@@ -6,6 +6,7 @@ import random
 import json
 import logging
 
+
 option_a = os.getenv('OPTION_A', "Chimp ")
 option_b = os.getenv('OPTION_B', "Gorilla")
 hostname = socket.gethostname()
