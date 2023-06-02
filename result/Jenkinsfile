@@ -1,17 +1,17 @@
 pipeline {
   agent { label 'CI'}
   stages {
-    stage('installing dependencies') {
-      steps {
-       sh '''
-        cd result
-        export NVM_DIR="$HOME/.nvm"
-        . ~/.nvm/nvm.sh
-        nvm install node 18.0
-        npm install
-        '''
-      }
-    }
+    // stage('installing dependencies') {
+    //   steps {
+    //    sh '''
+    //     cd result
+    //     export NVM_DIR="$HOME/.nvm"
+    //     . ~/.nvm/nvm.sh
+    //     nvm install node 18.0
+    //     npm install
+    //     '''
+    //   }
+    // }
     // stage('Sonarqube scan') {
     //   steps {
     //   withSonarQubeEnv('sonarqube ec2') {
@@ -26,7 +26,7 @@ pipeline {
       steps {
         sh '''
           cd result
-          docker build -t divyanshuk/result:$BUILD_NUMBER -t divyanshuk/result:latest .
+          sudo docker build -t divyanshuk/result:$BUILD_NUMBER -t divyanshuk/result:latest .
         '''
       }
     }
@@ -43,9 +43,9 @@ pipeline {
          withCredentials([usernamePassword(credentialsId: 'docker', passwordVariable: 'password', usernameVariable: 'username')]) {
     // some block
               sh '''
-                  docker login -u $username -p $password
-                  docker push divyanshuk/result:$BUILD_NUMBER 
-                  docker push divyanshuk/result:latest 
+                  sudo docker login -u $username -p $password
+                  sudo docker push divyanshuk/result:$BUILD_NUMBER 
+                  sudo docker push divyanshuk/result:latest 
               '''
           }
         }

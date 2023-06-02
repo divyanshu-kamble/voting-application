@@ -1,21 +1,21 @@
 pipeline {
   agent { label 'CI'}
   stages {
-    stage('Restore') {
-      steps {
-        sh "dotnet restore ./worker/Worker.csproj"
-      }
-    }
-        stage('Clean') {
-      steps {
-        sh "dotnet clean ./worker/Worker.csproj"
-      }
-    }
-        stage('Build') {
-      steps {
-        sh "dotnet build ./worker/Worker.csproj"
-      }
-    }
+    // stage('Restore') {
+    //   steps {
+    //     sh "dotnet restore ./worker/Worker.csproj"
+    //   }
+    // }
+    //     stage('Clean') {
+    //   steps {
+    //     sh "dotnet clean ./worker/Worker.csproj"
+    //   }
+    // }
+    //     stage('Build') {
+    //   steps {
+    //     sh "dotnet build ./worker/Worker.csproj"
+    //   }
+    // }
     // stage('Sonarqube scan') {
     //   steps {
     //   withSonarQubeEnv('sonarqube ec2') {
@@ -31,7 +31,7 @@ pipeline {
       steps {
         sh '''
         cd worker
-        docker buildx build --no-cache --build-arg TARGETPLATFORM=linux/amd64 -t divyanshuk/worker:$BUILD_NUMBER -t divyanshuk/worker:latest .
+        sudo docker buildx build --no-cache --build-arg TARGETPLATFORM=linux/amd64 -t divyanshuk/worker:$BUILD_NUMBER -t divyanshuk/worker:latest .
         '''
       }
     }
