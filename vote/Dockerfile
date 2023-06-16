@@ -5,7 +5,7 @@ FROM python:3.9-slim
 # RUN apt-get update 
 
 RUN apt-get install -y --no-install-recommends \
-    curl \
+    && apt-get install curl \
     && rm -rf /var/lib/apt/lists/*
 
 # Set the application directory
