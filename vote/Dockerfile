@@ -1,10 +1,10 @@
 # Using official python runtime base image
 FROM python:3.9-slim
 
-USER root
 # add curl for healthcheck
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends \
+RUN apt-get update 
+
+RUN apt-get install -y --no-install-recommends \
     curl \
     && rm -rf /var/lib/apt/lists/*
 
