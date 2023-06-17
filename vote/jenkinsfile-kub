@@ -9,6 +9,9 @@ pipeline {
       containers:
       - name: dind
         image: docker:24-dind
+        volumeMounts:
+        - mountPath: /var/build-data/
+          name: jenkins-docker
 
       - name: python
         image: python:3.9.17-alpine3.18
@@ -16,6 +19,13 @@ pipeline {
         - sleep
         args:
         - 10s
+        volumeMounts:
+        - mountPath: /var/build-data/
+          name: jenkins-build
+      volumes:
+      - name: jenkins-data
+        persistentVolumeClaim:
+          claimName: jenkins-pvc
 '''
         }
 }
