@@ -9,10 +9,7 @@ pipeline {
       containers:
       - name: dind
         image: docker:24-dind
-        command:
-        - dockerd
-        args:
-        - --host tcp://localhost:2375
+
       - name: python
         image: 3.9.17-alpine3.17
         command:
