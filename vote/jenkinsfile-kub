@@ -25,7 +25,7 @@ pipeline {
       volumes:
       - name: jenkins-data
         persistentVolumeClaim:
-          claimName: jenkins-pvc
+          claimName: jenkins-build
 '''
         }
 }
