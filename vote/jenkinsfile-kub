@@ -1,0 +1,47 @@
+pipeline {
+    agent agent { label 'CI' } {
+        kubernetes {
+            defaultContainer 'jnlp'
+            yaml '''
+    apiVersion: v1
+    kind: Pod
+    spec:
+      containers:
+      - name: dind
+        image: docker:24-dind
+        command:
+        - dockerd
+        args:
+        - --host tcp://localhost:2375
+      - name: python
+        image: 3.9.17-alpine3.17
+        command:
+        - sleep
+        args:
+        - 10s
+'''
+        }
+}
+        stages {
+        stage('python container') {
+            steps {
+                container('python') {
+                    sh '''
+                    cd vote && ls -l
+                    pip3 install -r requirements.txt
+        '''
+                }
+            }
+        }
+        stage('Run in docker container') {
+            steps {
+                container('dind') {
+                    sh '''
+                    cd vote
+                    docker build -t divyanshuk/vote:$BUILD_NUMBER -t divyanshuk/vote:latest .
+                    '''
+                }
+            }
+        }
+        }
+}
