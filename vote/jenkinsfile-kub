@@ -5,6 +5,9 @@ pipeline {
             yaml '''
     apiVersion: v1
     kind: Pod
+    metadata:
+        namespace: jenkins-testing
+        name: sample-kube
     spec:
       containers:
       - name: dind
