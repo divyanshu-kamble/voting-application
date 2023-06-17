@@ -14,7 +14,7 @@ pipeline {
         image: docker:24-dind
         volumeMounts:
         - mountPath: /var/build-data/
-          name: jenkins-docker
+          name: jenkins-bld
 
       - name: python
         image: python:3.9.17-alpine3.18
@@ -24,9 +24,9 @@ pipeline {
         - 10s
         volumeMounts:
         - mountPath: /var/build-data/
-          name: jenkins-build
+          name: jenkins-bld
       volumes:
-      - name: jenkins-data
+      - name: jenkins-bld
         persistentVolumeClaim:
           claimName: jenkins-build
 '''
