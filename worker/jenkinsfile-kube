@@ -56,23 +56,23 @@ pipeline {
         }
     }
         stages {
-            stage('dotnet container') {
+            stage('dotnet restore') {
                 steps {
-                    container('dotnet restore') {
+                    container('dotnet') {
                         sh 'dotnet restore ./worker/Worker.csproj'
                     }
                 }
             }
-            stage('dotnet container-1') {
+            stage('dotnet clean') {
                 steps {
-                    container('dotnet clean') {
+                    container('dotnet') {
                         sh 'dotnet clean ./worker/Worker.csproj'
                     }
                 }
             }
-            stage('dotnet container-2') {
+            stage('dotnet build') {
                 steps {
-                    container('dotnet build') {
+                    container('dotnet') {
                         sh 'dotnet build ./worker/Worker.csproj'
                     }
                 }
