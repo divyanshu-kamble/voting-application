@@ -1,0 +1,98 @@
+/* groovylint-disable-next-line CompileStatic */
+pipeline {
+    agent {
+        kubernetes {
+            defaultContainer 'jnlp'
+            yaml '''
+    apiVersion: v1
+    kind: Pod
+    metadata:
+        namespace: jenkins-testing
+        name: sample-kube
+    spec:
+      containers:
+      - name: dind
+        image: docker:24-dind
+        volumeMounts:
+        - mountPath: /var/build-data/
+          name: jenkins-bld
+        securityContext:
+            privileged: true
+
+      - name: dotnet
+        image: bitnami/dotnet-sdk:latest
+        command: [ "/bin/bash", "-c", "--" ]
+        args: [ "while true; do sleep 30; done;" ]
+        env:
+        // - name: JENKINS-URL
+        //   values: http://10.100.132.165:8080
+        securityContext:
+            allowPrivilegeEscalation: true
+        volumeMounts:
+        - mountPath: /var/build-data/
+          name: jenkins-bld
+        securityContext:
+            privileged: true
+
+      - name: trivy
+        image: aquasec/trivy:latest
+        command: [ "/bin/bash", "-c", "--" ]
+        args: [ "while true; do sleep 30; done;" ]
+        // env:
+        // - name: JENKINS-URL
+        //   values: http://10.100.132.165:8080
+        securityContext:
+            allowPrivilegeEscalation: true
+        volumeMounts:
+        - mountPath: /var/build-data/
+          name: jenkins-bld
+        securityContext:
+            privileged: true
+      volumes:
+      - name: jenkins-bld
+        persistentVolumeClaim:
+          claimName: jenkins-build
+'''
+        }
+    }
+        stages {
+            stage('dotnet container') {
+                steps {
+                    container('dotnet restore') {
+                        sh 'dotnet restore ./worker/Worker.csproj'
+                    }
+                }
+            }
+            stage('dotnet container-1') {
+                steps {
+                    container('dotnet clean') {
+                        sh 'dotnet clean ./worker/Worker.csproj'
+                    }
+                }
+            }
+            stage('dotnet container-2') {
+                steps {
+                    container('dotnet build') {
+                        sh 'dotnet build ./worker/Worker.csproj'
+                    }
+                }
+            }
+            stage('Run in docker container') {
+                steps {
+                    container('dind') {
+                        sh '''
+                        cd worker
+                        docker buildx build --no-cache --build-arg TARGETPLATFORM=linux/amd64 -t divyanshuk/worker:$BUILD_NUMBER -t divyanshuk/worker:latest .
+                        '''
+                    }
+                }
+            }
+            stage('Run trivy scan') {
+                steps {
+                    container('trivy') {
+                        sh 'trivy image -s HIGH -s CRITICAL --exit-code 0 divyanshuk/worker:$BUILD_NUMBER'
+                    }
+                }
+            }
+        }
+}
