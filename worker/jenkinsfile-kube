@@ -33,7 +33,7 @@ pipeline {
             privileged: true
 
       - name: trivy
-        image: aquasec/trivy:latest
+        image: aquasec/trivy:0.42.1
         command: [ "/bin/bash", "-c", "--" ]
         args: [ "while true; do sleep 30; done;" ]
         // env:
