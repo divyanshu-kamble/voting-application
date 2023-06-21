@@ -32,18 +32,18 @@ pipeline {
         securityContext:
             privileged: true
 
-      - name: trivy
-        image: aquasec/trivy:0.42.1
-        command: [ "/bin/bash", "-c", "--" ]
-        args: [ "while true; do sleep 30; done;" ]
-        env:
-        - name: JENKINS-URL
-          values: http://10.100.132.165:8080
-        volumeMounts:
-        - mountPath: /var/build-data/
-          name: jenkins-bld
-        securityContext:
-            privileged: true
+    //   - name: trivy
+    //     image: aquasec/trivy:0.42.1
+    //     command: [ "/bin/bash", "-c", "--" ]
+    //     args: [ "while true; do sleep 30; done;" ]
+    //     env:
+    //     - name: JENKINS-URL
+    //       values: http://10.100.132.165:8080
+    //     volumeMounts:
+    //     - mountPath: /var/build-data/
+    //       name: jenkins-bld
+    //     securityContext:
+    //         privileged: true
       volumes:
       - name: jenkins-bld
         persistentVolumeClaim:
