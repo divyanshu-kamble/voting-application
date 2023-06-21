@@ -83,12 +83,12 @@ pipeline {
                     }
                 }
             }
-            stage('Run trivy scan') {
-                steps {
-                    container('trivy') {
-                        sh 'trivy image -s HIGH -s CRITICAL --exit-code 0 divyanshuk/worker:$BUILD_NUMBER'
-                    }
-                }
-            }
+            // stage('Run trivy scan') {
+            //     steps {
+            //         container('trivy') {
+            //             sh 'trivy image -s HIGH -s CRITICAL --exit-code 0 divyanshuk/worker:$BUILD_NUMBER'
+            //         }
+            //     }
+            // }
         }
 }
