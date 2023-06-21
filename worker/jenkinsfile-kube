@@ -26,8 +26,6 @@ pipeline {
         env:
         // - name: JENKINS-URL
         //   values: http://10.100.132.165:8080
-        securityContext:
-            allowPrivilegeEscalation: true
         volumeMounts:
         - mountPath: /var/build-data/
           name: jenkins-bld
@@ -41,8 +39,6 @@ pipeline {
         // env:
         // - name: JENKINS-URL
         //   values: http://10.100.132.165:8080
-        securityContext:
-            allowPrivilegeEscalation: true
         volumeMounts:
         - mountPath: /var/build-data/
           name: jenkins-bld
