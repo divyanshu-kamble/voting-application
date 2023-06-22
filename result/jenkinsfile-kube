@@ -1,0 +1,83 @@
+pipeline {
+    agent {
+        kubernetes {
+            defaultContainer 'jnlp'
+            yaml '''
+    apiVersion: v1
+    kind: Pod
+    metadata:
+        namespace: jenkins-testing
+        name: sample-kube
+    spec:
+      containers:
+      - name: dind
+        image: docker:24-dind
+        volumeMounts:
+        - mountPath: /var/build-data/
+          name: jenkins-bld
+        securityContext:
+            privileged: true
+
+      - name: node
+        image: node:18.16.1-buster-slim
+        command: [ "/bin/bash", "-c", "--" ]
+        args: [ "while true; do sleep 30; done;" ]
+        volumeMounts:
+        - mountPath: /var/build-data/
+          name: jenkins-bld
+        securityContext:
+            privileged: true
+      volumes:
+      - name: jenkins-bld
+        persistentVolumeClaim:
+          claimName: jenkins-build
+'''
+        }
+}
+        stages {
+            stage('node container') {
+                steps {
+                    container('python') {
+                        sh '''
+                        cd result
+                        npm install
+                        '''
+                    }
+                }
+            }
+            stage('Run in docker container') {
+                steps {
+                    container('dind') {
+                        sh '''
+                            cd result
+                            docker build -t divyanshuk/result:$BUILD_NUMBER -t divyanshuk/result:latest .
+                            '''
+                    }
+                }
+            }
+            stage('Run trivy scan') {
+                steps {
+                    container('dind') {
+                        sh '''
+                        docker run -v /var/run/docker.sock:/var/run/docker.sock  aquasec/trivy:latest image -s HIGH -s CRITICAL --exit-code 0 divyanshuk/result:$BUILD_NUMBER
+                        '''
+                    }
+                }
+            }
+            stage('Upload image to Docker Registry') {
+                steps {
+                    /* groovylint-disable-next-line LineLength */
+                    withCredentials([usernamePassword(credentialsId: 'Docker', passwordVariable: 'password', usernameVariable: 'username')])
+                     {
+                    container('dind') {
+                        sh '''
+                            docker login -u $username -p $password
+                            docker push divyanshuk/result:$BUILD_NUMBER
+                            docker push divyanshuk/result:latest
+                        '''
+                    }
+                }
+            }
+        }
+    }
+}
