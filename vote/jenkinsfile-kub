@@ -1,5 +1,5 @@
 pipeline {
-    agent { label 'CI' } {
+    agent {
         kubernetes {
             defaultContainer 'jnlp'
             yaml '''
@@ -15,16 +15,25 @@ pipeline {
         volumeMounts:
         - mountPath: /var/build-data/
           name: jenkins-bld
+        securityContext:
+            privileged: true
 
       - name: python
-        image: python:3.9.17-alpine3.18
-        command:
-        - sleep
-        args:
-        - 10s
+        image: python:latest
+        command: [ "/bin/bash", "-c", "--" ]
+        args: [ "while true; do sleep 30; done;" ]
+        env:
+        - name: JENKINS-URL
+          values: http://10.100.132.165:8080
+        securityContext:
+            allowPrivilegeEscalation: true
         volumeMounts:
         - mountPath: /var/build-data/
           name: jenkins-bld
+        securityContext:
+            privileged: true
+
+
       volumes:
       - name: jenkins-bld
         persistentVolumeClaim:
@@ -33,25 +42,52 @@ pipeline {
         }
 }
         stages {
-        stage('python container') {
-            steps {
-                container('python') {
-                    sh '''
-                    cd vote && ls -l
-                    pip3 install -r requirements.txt
-        '''
+            stage('python container') {
+                steps {
+                    container('python') {
+                        sh '''
+                        pwd
+                        ls
+                        cd vote
+                        pip3 install -r requirements.txt
+                        '''
+                    }
                 }
             }
-        }
-        stage('Run in docker container') {
-            steps {
-                container('dind') {
-                    sh '''
-                    cd vote
-                    docker build -t divyanshuk/vote:$BUILD_NUMBER -t divyanshuk/vote:latest .
-                    '''
+            stage('Run in docker container') {
+                steps {
+                    container('dind') {
+                        sh '''
+                        cd vote
+                        docker build -t divyanshuk/vote:$BUILD_NUMBER -t divyanshuk/vote:latest .
+                        '''
+                    }
                 }
             }
-        }
+            stage('Run trivy scan') {
+                steps {
+                    container('dind') {
+                        sh '''
+                        /* groovylint-disable-next-line LineLength */
+                        docker run -v /var/run/docker.sock:/var/run/docker.sock  aquasec/trivy:latest image -s HIGH -s CRITICAL --exit-code 0 divyanshuk/vote:$BUILD_NUMBER
+                        '''
+                    }
+                }
+            }
+            stage('Upload image to Docker Registry') {
+                steps {
+                    /* groovylint-disable-next-line LineLength */
+                    withCredentials([usernamePassword(credentialsId: 'Docker', passwordVariable: 'password', usernameVariable: 'username')])
+                     {
+                    container('dind') {
+                        sh '''
+                            docker login -u $username -p $password
+                            docker push divyanshuk/vote:$BUILD_NUMBER
+                            docker push divyanshuk/vote:latest
+                        '''
+                    }
+                     }
+                }
+            }
         }
 }
