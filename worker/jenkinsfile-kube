@@ -90,7 +90,8 @@ pipeline {
             stage('Upload image to Docker Registry') {
                 steps {
                     /* groovylint-disable-next-line LineLength */
-                    withCredentials([usernamePassword(credentialsId: 'docker', passwordVariable: 'password', usernameVariable: 'username')]) {
+                    withCredentials([usernamePassword(credentialsId: 'docker', passwordVariable: 'password', usernameVariable: 'username')])
+                     {
                     container('dind') {
                         sh '''
                             docker login -u $username -p $password
@@ -98,7 +99,8 @@ pipeline {
                             docker push divyanshuk/worker:latest
                         '''
                     }
-                    }
+                     }
                 }
             }
         }
+}
